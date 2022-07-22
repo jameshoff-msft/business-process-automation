@@ -126,8 +126,6 @@ export default function Price(props) {
         setButtonDisabled(false)
     }
 
-
-
     const callPriceAPi = async (stageFilter) => {
         try {
             let url = '/api/price?filter='
