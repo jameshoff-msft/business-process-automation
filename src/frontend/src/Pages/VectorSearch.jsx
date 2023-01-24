@@ -12,7 +12,6 @@ export default function ViewInsights(props) {
 
     useEffect(() => {
 
-
     }, [])
 
     const onQueryChange = (_, value) => {
