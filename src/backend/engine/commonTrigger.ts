@@ -148,6 +148,4 @@ export const mqTrigger = async (context: Context, mySbMsg: any, mq: MessageQueue
             body: { status: "failed", err: err }
         }
     }
-
-
 }

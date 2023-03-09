@@ -10,7 +10,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             const out = await axios.get(`https://${process.env.COSMOS_DB_CONTAINER}.azurewebsites.net/api/VectorSearch?query=${req.query.query}&pipeline=${req.query.pipeline}`)
             const documents = []
             for(const doc of out.data.documents){
-                console.log(doc)
                 const document = await db.get(doc.id)
                 documents.push({document: document, score : doc.value.dist})
             }
