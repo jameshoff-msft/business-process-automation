@@ -41,7 +41,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
     }else {
         try{
-            const result = await db.getConfig()
+            const result = await db.getConfig(req.query.id)
             context.res = {
                 body : result
             }

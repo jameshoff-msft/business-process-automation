@@ -43,6 +43,12 @@ export default function Content(props) {
                 breadCrumbItems.push({ text: 'Upload Documents', key: 'UPLOAD_DOCUMENTS' })
                 setBreadCrumbItems(breadCrumbItems)
                 break
+            case 'CONFIGURE_INFERENCE':
+                setSelectedMenuItem('CONFIGURE_INFERENCE')
+                breadCrumbItems.push({ text: 'Home', key: 'home', onClick: onBreadcrumbHome })
+                breadCrumbItems.push({ text: 'Configure Inference Approach', key: 'CONFIGURE_INFERENCE' })
+                setBreadCrumbItems(breadCrumbItems)
+                break
             case 'COG_SEARCH':
                 setSelectedMenuItem('COG_SEARCH')
                 breadCrumbItems.push({ text: 'Home', key: 'home', onClick: onBreadcrumbHome })
@@ -84,7 +90,9 @@ export default function Content(props) {
             case 'CURRENT_PIPELINE':
                 return (<CurrentPipeline theme={props.theme} />)
             case 'CONFIGURE_PIPELINE':
-                return (<SelectPipeline theme={props.theme} onSelectContent={onSelectContent} />)
+                return (<SelectPipeline type="INGESTION" theme={props.theme} onSelectContent={onSelectContent} />)
+            case 'CONFIGURE_INFERENCE':
+                return (<SelectPipeline type="INFERENCE" theme={props.theme} onSelectContent={onSelectContent} />)
             case 'UPLOAD_DOCUMENTS':
                 return (<Upload theme={props.theme} />)
             case 'COG_SEARCH':
@@ -124,7 +132,7 @@ export default function Content(props) {
                             <ChevronEndMediumIcon />
                         </Breadcrumb.Divider>
                         <Breadcrumb.Item>
-                            Create Pipeline
+                            View Pipeline
                         </Breadcrumb.Item>
                     </>)
             case 'CONFIGURE_PIPELINE':
@@ -139,7 +147,22 @@ export default function Content(props) {
                             <ChevronEndMediumIcon />
                         </Breadcrumb.Divider>
                         <Breadcrumb.Item>
-                            View Pipeline
+                            Configure Pipeline
+                        </Breadcrumb.Item>
+                    </>)
+            case 'CONFIGURE_INFERENCE':
+                return (
+                    <>
+                        <Breadcrumb >
+                            <Breadcrumb.Item style={{ paddingLeft: "0px" }}>
+                                <Breadcrumb.Link href="" onClick={onBreadcrumbHome}>Home</Breadcrumb.Link>
+                            </Breadcrumb.Item>
+                        </Breadcrumb>
+                        <Breadcrumb.Divider>
+                            <ChevronEndMediumIcon />
+                        </Breadcrumb.Divider>
+                        <Breadcrumb.Item>
+                            Configure Inference Approach
                         </Breadcrumb.Item>
                     </>)
             case 'UPLOAD_DOCUMENTS':

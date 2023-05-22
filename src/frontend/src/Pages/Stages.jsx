@@ -21,12 +21,17 @@ import OpenAiGenericDialog from '../Components/Dialogs/OpenAiGenericDialog';
 import SpliceDocument from '../Components/Dialogs/SpliceDocument';
 
 import { sc } from '../Components/serviceCatalog'
+import { inferenceCatalog } from '../Components/inferenceCatalog';
 import { Button, Text } from '@fluentui/react-northstar'
 
 
 export default function Stages(props) {
 
-    const [serviceCatalog] = useState(sc)
+    const pipelinesLabel = "pipelines"
+    const inferenceLabel = "inference"
+    const label = props.type === 'INGESTION' ? pipelinesLabel : inferenceLabel
+
+    const [serviceCatalog] = useState(props.type === 'INGESTION' ? sc : inferenceCatalog)
     const [stages, setStages] = useState([])
     const [value, setValue] = useState(0)
     const [options, setOptions] = useState([])
@@ -45,11 +50,8 @@ export default function Stages(props) {
     const [hideVideoIndexerDialog, setHideVideoIndexerDialog] = useState(true)
     const [hideSpliceDocumentDialog, setHideSpliceDocumentDialog] = useState(true)
     const [currentOption, setCurrentOption] = useState(null)
-    //const [price, setPrice] = useState(0)
-    // const [numDocuments, setNumDocuments] = useState(0)
-    // const [minutesPerAudioFile, setMinutesPerAudioFile] = useState(0)
-    // const [pagesPerDocument, setPagesPerDocument] = useState(0)
 
+    
 
     useEffect(() => {
         const getSC = async () => {
@@ -64,7 +66,7 @@ export default function Stages(props) {
 
     const onDone = async () => {
         try {
-            const currentPipelines = await axios.get('api/config?id=pipelines')
+            const currentPipelines = await axios.get(`api/config?id=${label}`)
             for (const p of currentPipelines.data.pipelines) {
                 if (p.name === props.selectedPipelineName) {
                     p.stages = stages.slice(1, stages.length)

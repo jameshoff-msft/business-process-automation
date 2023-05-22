@@ -19,7 +19,7 @@ export abstract class DB {
 
     public abstract count() : Promise<any>;
     public abstract create(data: any) : Promise<any>;
-    public abstract getConfig() : Promise<any>;
+    public abstract getConfig(id: string) : Promise<any>;
     public abstract delete(id: string) : Promise<any>;
 }
 
@@ -158,10 +158,10 @@ export class BlobDB extends DB {
         return data
     }
 
-    public getConfig = async (): Promise<any> => {
+    public getConfig = async (id : string): Promise<any> => {
         let out : any
         try{
-            const pipelines = await this._configClient.getBuffer('pipelines.json')
+            const pipelines = await this._configClient.getBuffer(`${id}.json`)
             if(pipelines){
                 out = JSON.parse(pipelines.toString())
             } else{

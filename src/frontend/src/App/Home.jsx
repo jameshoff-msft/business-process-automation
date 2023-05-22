@@ -16,12 +16,11 @@ export default function Home(props) {
         if (isOAIDeployed) {
             return (
                 <>
-                    
+                    |
+                    <Button id="ENTERPRISE_SEARCH" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Enterprise Search Demo" />
                     |
                     <Button id="VECTOR_SEARCH" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="OpenAI Vector Search Application" />
                 </>
-                
-            
             )
         }
     }
@@ -48,11 +47,11 @@ export default function Home(props) {
             |
             <Button id="UPLOAD_DOCUMENTS" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Ingest Documents" />
             |
+            <Button id="CONFIGURE_INFERENCE" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Create Inference Approaches" />
+            |
             <Button id="COG_SEARCH" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Cognitive Search" />
             |
             <Button id="VIEW_INSIGHTS" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Sample Search Application" />
-            |
-            <Button id="ENTERPRISE_SEARCH" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Enterprise Search Demo" />
             |
             <Button id="OPENAI_VIEWER" onClick={(e) => props.onClick(e)} text style={{ color: "rgb(0, 120, 212)" }} content="Result Viewer" />
             {renderOAIOptions()}

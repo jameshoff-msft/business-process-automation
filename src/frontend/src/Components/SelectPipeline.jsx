@@ -5,24 +5,25 @@ import Stages from '../Pages/Stages'
 import { DeleteOutline } from '@material-ui/icons';
 
 
-const pipelinesLabel = "pipelines"
 
 export default function SelectPipeline(props) {
 
     const [pipelines, setPipelines] = useState(null)
     const [newPipelineName, setNewPipelineName] = useState("")
     const [selectedPipeline, setSelectedPipeline] = useState(null)
-    //const [forceUpdate, setForceUpdate] = useState(0)
+
+    const pipelinesLabel = "pipelines"
+    const inferenceLabel = "inference"
+    const label = props.type === 'INGESTION' ? pipelinesLabel : inferenceLabel
 
     useEffect(() => {
         try {
-            axios.get(`/api/config?id=${pipelinesLabel}`).then(ret => {
+            axios.get(`/api/config?id=${label}`).then(ret => {
                 if (ret.data === '') {
                     setPipelines([])
                 } else {
                     setPipelines(ret.data.pipelines)
                 }
-
             })
         } catch (err) {
             console.log(err)
@@ -34,10 +35,9 @@ export default function SelectPipeline(props) {
     }
 
     const onCreatePipeline = async () => {
-        console.log(newPipelineName)
-        const currentPipelines = await axios.get(`/api/config?id=${pipelinesLabel}`)
+        const currentPipelines = await axios.get(`/api/config?id=${label}`)
         if (currentPipelines.data === '') {
-            await axios.post('/api/config', { pipelines: [{ stages: [], name: newPipelineName }], id: pipelinesLabel })
+            await axios.post('/api/config', { pipelines: [{ stages: [], name: newPipelineName }], id: label })
         } else {
             currentPipelines.data.pipelines.push({ stages: [], name: newPipelineName })
             await axios.post('/api/config', currentPipelines.data)
@@ -56,17 +56,9 @@ export default function SelectPipeline(props) {
     }
 
     const onDeletePipeline = async (pn) => {
-        
-        // if (currentPipelines.data === '') {
-        //     await axios.post('/api/config', { pipelines: [{ stages: [], name: newPipelineName }], id: pipelinesLabel })
-        // } else {
-        //     currentPipelines.data.pipelines.push({ stages: [], name: newPipelineName })
-        //     await axios.post('/api/config', currentPipelines.data)
-        // }
-
 
         if (pipelines) {
-            const currentPipelines = await axios.get(`/api/config?id=${pipelinesLabel}`)
+            const currentPipelines = await axios.get(`/api/config?id=${label}`)
             currentPipelines.data.pipelines = currentPipelines.data.pipelines.filter(p => (p.name !== pn))
             await axios.post('/api/config', currentPipelines.data)
             setPipelines(currentPipelines.data.pipelines)
@@ -74,20 +66,21 @@ export default function SelectPipeline(props) {
     }
 
     const renderPipelines = () => {
-        if (pipelines ) {
+        if (pipelines) {
             return (
-                pipelines.map(p => 
-                        {return(
-                            <div style={{display:"flex"}}>
-                                <div className="hoverPipeline" onClick={() => onPipelineSelect(p.name)} value={p.name} style={{ color: "blue", width : "10em" }}>
-                                    {p.name}
-                                </div>
-                                <div className="hoverPipeline" onClick={() => onDeletePipeline(p.name)} style={{ marginBottom: "20px"}}>
-                                    <DeleteOutline/>
-                                </div>
+                pipelines.map(p => {
+                    return (
+                        <div style={{ display: "flex" }}>
+                            <div className="hoverPipeline" onClick={() => onPipelineSelect(p.name)} value={p.name} style={{ color: "blue", width: "10em" }}>
+                                {p.name}
                             </div>
-                            )}
-                        )
+                            <div className="hoverPipeline" onClick={() => onDeletePipeline(p.name)} style={{ marginBottom: "20px" }}>
+                                <DeleteOutline />
+                            </div>
+                        </div>
+                    )
+                }
+                )
             )
         } else {
             return (
@@ -103,7 +96,7 @@ export default function SelectPipeline(props) {
     }
 
     if (selectedPipeline) {
-        return (<Stages onSelectContent={props.onSelectContent} selectedPipelineName={selectedPipeline.name} />)
+        return (<Stages type={props.type} onSelectContent={props.onSelectContent} selectedPipelineName={selectedPipeline.name} />)
     } else {
         return (
             <div style={{ paddingTop: "50px" }}>
