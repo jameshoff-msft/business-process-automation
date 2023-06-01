@@ -25,15 +25,15 @@ import axios from 'axios'
 
 const EnterpriseSearch = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
-    const [promptTemplate, setPromptTemplate] = useState("");
-    const [facetTemplate, setFacetTemplate] = useState("If the question is asking about 'sentiment' regarding the sources and other documents in the database, use the 'Facets' field to answer the question.");
-    const [facetQueryTermsTemplate, setFacetQueryTermsTemplate] = useState("When generating the Search Query do not use terms related to sentiment.  Example ['sentiment', 'positive', 'negative',etc]");
+    // const [promptTemplate, setPromptTemplate] = useState("");
+    // const [facetTemplate, setFacetTemplate] = useState("If the question is asking about 'sentiment' regarding the sources and other documents in the database, use the 'Facets' field to answer the question.");
+    // const [facetQueryTermsTemplate, setFacetQueryTermsTemplate] = useState("When generating the Search Query do not use terms related to sentiment.  Example ['sentiment', 'positive', 'negative',etc]");
     const [retrieveCount, setRetrieveCount] = useState(3);
-    const [useSemanticRanker, setUseSemanticRanker] = useState(true);
+    //const [useSemanticRanker, setUseSemanticRanker] = useState(true);
     const [vectorSearchPipeline, setVectorSearchPipeline] = useState("");
-    const [useSemanticCaptions, setUseSemanticCaptions] = useState(false);
-    const [excludeCategory, setExcludeCategory] = useState("");
-    const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState(false);
+    //const [useSemanticCaptions, setUseSemanticCaptions] = useState(false);
+    //const [excludeCategory, setExcludeCategory] = useState("");
+    //const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState(false);
 
     const lastQuestionRef = useRef("");
     const chatMessageStreamEnd = useRef(null);
