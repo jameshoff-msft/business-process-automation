@@ -668,6 +668,14 @@
           "alwaysOn": true,
           "appSettings": [
             {
+              "name": "OPENAI_DEPLOYMENT_SEARCH_DOC",
+              "value": "text-embedding-ada-002"
+            },
+            {
+              "name": "OPENAI_DEPLOYMENT_SEARCH_QUERY",
+              "value": "text-embedding-ada-002"
+            },
+            {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v012.zip?sv=2021-10-04&st=2023-05-31T17%3A28%3A30Z&se=2024-04-18T17%3A28%3A00Z&sr=b&sp=r&sig=RC7DsOnq6zgmLHy36Ym6UfimmmE9pPMVsxyI04GIGOQ%3D"
             },

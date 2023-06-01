@@ -19,8 +19,21 @@ export class RedisSimilarity {
         await this._client.disconnect()
     }
 
+    public dropIndex = async (indexName: string) => {
+        let out
+        try {
+            out = await this._client.ft.dropIndex(indexName)
+        } catch (e) {
+            if (e.message === 'Index already exists') {
+                console.log('Index exists already, skipped creation.');
+            } else{
+                console.log(e)
+            }
+        }
+        return out
+    }
+
     public createIndex = async (indexName: string, dimension: number) => {
-        //await this._client.sendCommand(['FT.CREATE',indexName,'ON',' JSON ','SCHEMA','$.embeddings','as','embeddings','VECTOR','FLAT','6',' TYPE','FLOAT32',' DIM',dimension,'DISTANCE_METRIC','L2']);
         let out
         try {
             out = await this._client.ft.create(indexName, {
@@ -38,6 +51,8 @@ export class RedisSimilarity {
         } catch (e) {
             if (e.message === 'Index already exists') {
                 console.log('Index exists already, skipped creation.');
+            }else{
+                console.log(e)
             }
         }
         return out
