@@ -100,15 +100,15 @@ const EnterpriseSearch = () => {
                 history: [...history, { user: question, bot: undefined }],
                 approach: "rtr", //Approaches.ReadRetrieveRead,
                 overrides: {
-                    promptTemplate: promptTemplate.length === 0 ? undefined : promptTemplate,
-                    excludeCategory: excludeCategory.length === 0 ? undefined : excludeCategory,
+                    //promptTemplate: promptTemplate.length === 0 ? undefined : promptTemplate,
+                    //excludeCategory: excludeCategory.length === 0 ? undefined : excludeCategory,
                     top: retrieveCount,
-                    semanticRanker: useSemanticRanker,
+                    //semanticRanker: useSemanticRanker,
                     vectorSearchPipeline: vectorSearchPipeline,
-                    semanticCaptions: useSemanticCaptions,
-                    suggestFollowupQuestions: useSuggestFollowupQuestions,
-                    facetQueryTermsTemplate: facetQueryTermsTemplate,
-                    facetTemplate : facetTemplate
+                    //semanticCaptions: useSemanticCaptions,
+                    //suggestFollowupQuestions: useSuggestFollowupQuestions,
+                    //facetQueryTermsTemplate: facetQueryTermsTemplate,
+                    //facetTemplate : facetTemplate
                 },
                 index: selectedIndex
             };
@@ -246,7 +246,7 @@ const EnterpriseSearch = () => {
                                             onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
                                             onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                             onFollowupQuestionClicked={q => makeApiRequest(q)}
-                                            showFollowupQuestions={useSuggestFollowupQuestions && answers.length - 1 === index}
+                                            //showFollowupQuestions={useSuggestFollowupQuestions && answers.length - 1 === index}
                                         />
                                     </div>
                                 </div>
