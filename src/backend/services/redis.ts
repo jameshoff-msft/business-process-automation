@@ -1,8 +1,8 @@
-import { createClient, SchemaFieldTypes, VectorAlgorithms } from 'redis';
+import { createClient, RedisClientType, SchemaFieldTypes, VectorAlgorithms } from 'redis';
 
 export class RedisSimilarity {
 
-    private _client
+    private _client 
 
     constructor(connectionString: string, password: string) {
         this._client = createClient({
@@ -20,15 +20,12 @@ export class RedisSimilarity {
     }
 
     public dropIndex = async (indexName: string) => {
+        await this.flushall()
         let out
         try {
             out = await this._client.ft.dropIndex(indexName)
         } catch (e) {
-            if (e.message === 'Index already exists') {
-                console.log('Index exists already, skipped creation.');
-            } else{
-                console.log(e)
-            }
+            console.log(e)
         }
         return out
     }
@@ -36,6 +33,7 @@ export class RedisSimilarity {
     public createIndex = async (indexName: string, dimension: number) => {
         let out
         try {
+            //out = await this._client.ft.dropIndex(indexName)
             out = await this._client.ft.create(indexName, {
                 v: {
                     type: SchemaFieldTypes.VECTOR,
@@ -59,17 +57,17 @@ export class RedisSimilarity {
     }
 
     public set = async (id: string, document: any, embeddings: any) => {
-        await this._client.hSet(id, {v : this._float32Buffer(embeddings), pipeline: document.pipeline})
+        await this._client.hSet(id, {v : this._float32Buffer(embeddings), pipeline: document.pipeline.replace('-','')})
     }
 
     public query = async (indexName: string, embeddings: any, numResults: string, pipeline: string) => {
-        return await this._client.ft.search(indexName, `(@pipeline:${pipeline} )=>[KNN ${numResults} @v $BLOB AS dist]`, {
+        return await this._client.ft.search(indexName, `(@pipeline:${pipeline.replace('-','')})=>[KNN ${numResults} @v $BLOB AS dist]`, {
             PARAMS: {
                 BLOB: this._float32Buffer(embeddings)
             },
             SORTBY: 'dist',
             DIALECT: 2,
-            RETURN: ['dist']
+            RETURN: ['dist','pipeline']
         });
     }
 
