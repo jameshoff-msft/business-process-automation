@@ -51,7 +51,7 @@ class VectorRetriever(BaseRetriever):
         np_vector = numpy.array(embeddings, dtype=numpy.float32)
         
         r = redis.Redis.from_url(url = os.environ["REDIS_URL"], password=os.environ["REDIS_PW"])
-        query = "(@pipeline:"+self.index+")=>[KNN "+self.top+" @v $BLOB AS dist]"
+        query = "(@pipeline:"+self.index.replace('-','')+")=>[KNN "+self.top+" @v $BLOB AS dist]"
         redisQuery = Query(query).return_field("dist").sort_by("dist").dialect(2)
         searchOut = r.ft("bpaindexfilterada").search(redisQuery, query_params={"BLOB": np_vector.tobytes() })
         docs = []
@@ -61,7 +61,7 @@ class VectorRetriever(BaseRetriever):
             blobDocument = json.loads(blobDownload)
             del blobDocument["aggregatedResults"]["openaiEmbeddings"]
             blobDocument["source"] = blobDocument["filename"]
-            docs.append(Document(page_content=self.nonewlines("["+ blobDocument["filename"] +"]"+self.getText(["aggregatedResults/text"], blobDocument)),metadata={"sources":blobDocument["filename"]}))
+            docs.append(Document(page_content=self.nonewlines("["+ blobDocument["filename"] +"]"+self.getText(["aggregatedResults/text"], blobDocument)),metadata={"source":blobDocument["filename"]}))
         return docs
         
 
