@@ -301,7 +301,7 @@ const EnterpriseSearch = () => {
                     onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Close</DefaultButton>}
                     isFooterAtBottom={true}
                 >
-                    <TextField
+                    {/* <TextField
                         className={styles.chatSettingsSeparator}
                         defaultValue={promptTemplate}
                         label="Override prompt template"
@@ -326,7 +326,7 @@ const EnterpriseSearch = () => {
                         multiline
                         autoAdjustHeight
                         onChange={onFacetQueryTermsTemplateChange}
-                    />
+                    /> */}
 
                     <SpinButton
                         className={styles.chatSettingsSeparator}
@@ -336,7 +336,7 @@ const EnterpriseSearch = () => {
                         defaultValue={retrieveCount.toString()}
                         onChange={onRetrieveCountChange}
                     />
-                    <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
+                    {/* <TextField className={styles.chatSettingsSeparator} label="Exclude category" onChange={onExcludeCategoryChanged} />
                     <Checkbox
                         className={styles.chatSettingsSeparator}
                         checked={useSemanticRanker}
@@ -355,7 +355,7 @@ const EnterpriseSearch = () => {
                         checked={useSuggestFollowupQuestions}
                         label="Suggest follow-up questions"
                         onChange={onUseSuggestFollowupQuestionsChange}
-                    />
+                    /> */}
                     {/* <TextField className={styles.chatSettingsSeparator} label="Vector Search Index" onChange={onVectorSearchPipeline} /> */}
                 </Panel>
             </div>
