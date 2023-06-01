@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Checkbox, Panel, DefaultButton, TextField, SpinButton } from "@fluentui/react";
+import { Panel, DefaultButton, SpinButton } from "@fluentui/react";
 //import { SparkleFilled } from "@fluentui/react-icons";
 import { Dropdown } from '@fluentui/react-northstar';
 import styles from "./Chat.module.css";
@@ -134,37 +134,37 @@ const EnterpriseSearch = () => {
 
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
 
-    const onPromptTemplateChange = (_ev, newValue) => {
-        setPromptTemplate(newValue || "");
-    };
+    // const onPromptTemplateChange = (_ev, newValue) => {
+    //     setPromptTemplate(newValue || "");
+    // };
 
-    const onFacetTemplateChange = (_ev, newValue) => {
-        setFacetTemplate(newValue || "");
-    };
+    // const onFacetTemplateChange = (_ev, newValue) => {
+    //     setFacetTemplate(newValue || "");
+    // };
 
-    const onFacetQueryTermsTemplateChange = (_ev, newValue) => {
-        setFacetQueryTermsTemplate(newValue || "");
-    };
+    // const onFacetQueryTermsTemplateChange = (_ev, newValue) => {
+    //     setFacetQueryTermsTemplate(newValue || "");
+    // };
 
     const onRetrieveCountChange = (_ev, newValue) => {
         setRetrieveCount(parseInt(newValue || "3"));
     };
 
-    const onUseSemanticRankerChange = (_ev, checked) => {
-        setUseSemanticRanker(!!checked);
-    };
+    // const onUseSemanticRankerChange = (_ev, checked) => {
+    //     setUseSemanticRanker(!!checked);
+    // };
 
-    const onUseSemanticCaptionsChange = (_ev, checked) => {
-        setUseSemanticCaptions(!!checked);
-    };
+    // const onUseSemanticCaptionsChange = (_ev, checked) => {
+    //     setUseSemanticCaptions(!!checked);
+    // };
 
-    const onExcludeCategoryChanged = (_ev, newValue) => {
-        setExcludeCategory(newValue || "");
-    };
+    // const onExcludeCategoryChanged = (_ev, newValue) => {
+    //     setExcludeCategory(newValue || "");
+    // };
 
-    const onUseSuggestFollowupQuestionsChange = (_ev, checked) => {
-        setUseSuggestFollowupQuestions(!!checked);
-    };
+    // const onUseSuggestFollowupQuestionsChange = (_ev, checked) => {
+    //     setUseSuggestFollowupQuestions(!!checked);
+    // };
 
     // const onExampleClicked = (example) => {
     //     makeApiRequest(example);
