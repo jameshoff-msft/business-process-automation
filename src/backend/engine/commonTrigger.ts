@@ -18,7 +18,6 @@ if (process.env.STORE_IN_REDIS === 'true') {
     redis.connect().then((c) => {
         try {
             // redis.flushall().then(r => {
-            redis.dropIndex("bpaindexfilterada")
             redis.createIndex("bpaindexfilterada", 1536).then((idx) => {
                 console.log('created new index')
             })

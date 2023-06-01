@@ -8,6 +8,8 @@ from langchain.schema import Document, BaseRetriever
 from typing import List
 import os
 
+OPENAI_DEPLOYMENT_SEARCH_QUERY = os.environ.get("OPENAI_DEPLOYMENT_SEARCH_QUERY")
+
 class VectorRetriever(BaseRetriever):
     def __init__(self, index : str, top : int ):
        self.index = index

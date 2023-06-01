@@ -13,6 +13,7 @@ import numpy
 
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_DEPLOYMENT_SEARCH_QUERY = os.environ.get("OPENAI_DEPLOYMENT_SEARCH_QUERY")
 
 # Simple retrieve-then-read implementation, using the Cognitive Search and OpenAI APIs directly. It first retrieves
 # top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion 
@@ -103,7 +104,7 @@ Facets:
                 "Content-Type" : "application/json"
             }
 
-            url =  "https://"+os.environ.get("AZURE_OPENAI_SERVICE")+".openai.azure.com/"+"openai/deployments/"+"text-search-ada-query-001"+"/embeddings?api-version=2022-12-01"
+            url =  "https://"+os.environ.get("AZURE_OPENAI_SERVICE")+".openai.azure.com/"+"openai/deployments/"+OPENAI_DEPLOYMENT_SEARCH_QUERY+"/embeddings?api-version=2022-12-01"
             requestOut = requests.post(url, json = {'input' : history[-1]["user"]}, headers=headers)
             output = json.loads(requestOut.text)
             embeddings = output["data"][0]["embedding"]
