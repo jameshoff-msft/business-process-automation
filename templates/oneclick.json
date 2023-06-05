@@ -552,7 +552,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v012.zip?sv=2021-10-04&st=2023-05-31T17%3A28%3A30Z&se=2024-04-18T17%3A28%3A00Z&sr=b&sp=r&sig=RC7DsOnq6zgmLHy36Ym6UfimmmE9pPMVsxyI04GIGOQ%3D"
+              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v013.zip?sv=2021-10-04&st=2023-06-05T13%3A26%3A16Z&se=2024-04-24T13%3A26%3A00Z&sr=b&sp=r&sig=ztXu2%2F3xwvB5%2BxMevgNXDgfvb0HIcfDHdXMZntFj13I%3D"
             },  
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -632,7 +632,7 @@
       "apiVersion": "2022-09-01",
       "name": "[parameters('functionAppName')]",
       "location": "[parameters('primaryRegion')]",
-      "kind": "functionapp,linux",
+      "kind": "functionapp",
       "properties": {
         "httpsOnly": true,
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
@@ -652,6 +652,14 @@
             {
               "name": "AzureWebJobsStorage",
               "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-08-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(parameters('functionAppName'))]"
             },
             {
               "name": "AzureWebJobsServiceBus",

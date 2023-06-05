@@ -135,7 +135,7 @@ class CustomApproach(Approach):
     def run(self, history: list[dict], overrides: dict) -> any:
         handler = MyCallbackHandler()
         local_count = count
-        llm = OpenAI(temperature=0.0,deployment_id=os.environ.get("AZURE_OPENAI_GPT_DEPLOYMENT"),callbacks=[handler])
+        llm = OpenAI(temperature=0.0,deployment_id=os.environ.get("AZURE_OPENAI_GPT_DEPLOYMENT"),callbacks=[handler], batch_size=1)
 
 
         # chain = CustomChain(
