@@ -508,6 +508,20 @@
       }
     },
     {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-{1}', parameters('hostingPlanName'), 'windows')]", // "[parameters('hostingPlanName')]",
+      "location": "[parameters('primaryRegion')]",
+      "kind": "windows",
+      "sku": {
+        "name": "P2v2",
+        "tier": "PremiumV2"
+      },
+      "properties": {
+       
+      }
+    },
+    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
       "name": "[parameters('applicationInsightsName')]",
@@ -635,10 +649,8 @@
       "kind": "functionapp",
       "properties": {
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
-        "clientAffinityEnabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-{1}', parameters('hostingPlanName'), 'windows'))]",
         "siteConfig": {
-          "linuxFxVersion": "Node|18",
           "alwaysOn": true,
           "appSettings": [
             {
@@ -654,16 +666,12 @@
               "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-08-01').keys[0].value)]"
             },
             {
-              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
-            },
-            {
-              "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(parameters('functionAppName'))]"
-            },
-            {
               "name": "AzureWebJobsServiceBus",
               "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/authorizationrules', parameters('projectName'),'mypolicy'),'2022-01-01-preview').primaryConnectionString]"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~18"
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
