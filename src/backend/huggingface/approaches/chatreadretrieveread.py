@@ -99,7 +99,7 @@ Search query:
                 "Content-Type" : "application/json"
             }
 
-            url =  "https://"+os.environ.get("AZURE_OPENAI_SERVICE")+".openai.azure.com/"+"openai/deployments/"+"text-search-curie-query-001"+"/embeddings?api-version=2022-12-01"
+            url =  "https://"+os.environ.get("AZURE_OPENAI_SERVICE")+".openai.azure.com/"+"openai/deployments/"+"text-embedding-ada-002"+"/embeddings?api-version=2022-12-01"
             requestOut = requests.post(url, json = {'input' : history[-1]["user"]}, headers=headers)
             output = json.loads(requestOut.text)
             embeddings = output["data"][0]["embedding"]

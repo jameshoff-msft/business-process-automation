@@ -560,10 +560,29 @@
     },
     {
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2022-12-01",
-      "name": "[concat(parameters('openaiName'), '/text-davinci-003')]",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(parameters('openaiName'), '/text-embedding-ada-002')]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', parameters('openaiName'))]"
+      ],
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "text-embedding-ada-002",
+          "version": "2"
+        },
+        "scaleSettings": {
+          "scaleType": "Standard"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2022-03-01",
+      "name": "[concat(parameters('openaiName'), '/text-davinci-003')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('openaiName'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', parameters('openaiName'),  'text-embedding-ada-002')]"
       ],
       "properties": {
         "model": {
@@ -578,7 +597,7 @@
     },
     {
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2022-03-01",
       "name": "[concat(parameters('openaiName'), '/chatgpt')]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', parameters('openaiName'))]",
@@ -593,6 +612,20 @@
         "scaleSettings": {
           "scaleType": "Standard"
         }
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-{1}', parameters('hostingPlanName'), 'windows')]", // "[parameters('hostingPlanName')]",
+      "location": "[parameters('primaryRegion')]",
+      "kind": "windows",
+      "sku": {
+        "name": "P2v2",
+        "tier": "PremiumV2"
+      },
+      "properties": {
+       
       }
     },
     {
@@ -611,7 +644,7 @@
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v013.zip?sv=2021-10-04&st=2023-06-05T13%3A26%3A16Z&se=2024-04-24T13%3A26%3A00Z&sr=b&sp=r&sig=ztXu2%2F3xwvB5%2BxMevgNXDgfvb0HIcfDHdXMZntFj13I%3D"
+              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v014.zip?sv=2021-10-04&st=2023-06-06T13%3A59%3A35Z&se=2024-02-20T14%3A59%3A00Z&sr=b&sp=r&sig=3mNhVka8ZQI%2FSncvEBlJrMaGFedPy%2BwBzVOjecgs%2F7Q%3D"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -691,18 +724,18 @@
       "apiVersion": "2022-09-01",
       "name": "[parameters('functionAppName')]",
       "location": "[parameters('primaryRegion')]",
-      "kind": "functionapp,linux",
+      "kind": "functionapp",
       "properties": {
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
-        "clientAffinityEnabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-{1}', parameters('hostingPlanName'), 'windows'))]",
         "siteConfig": {
-          "linuxFxVersion": "Node|16",
+          "use32BitWorkerProcess" : false,
+          "netFrameworkVersion": "6.0",
           "alwaysOn": true,
           "appSettings": [
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/backendv031.zip?sv=2021-10-04&st=2023-05-31T17%3A26%3A22Z&se=2024-03-14T17%3A26%3A00Z&sr=b&sp=r&sig=IBWFAGWvXlGyzTmelH0AjR5bjneERhRL8r%2FIclEYBKQ%3D"
+              "value": "https://bpasource.blob.core.windows.net/source/backendv033.zip?sv=2021-10-04&st=2023-06-05T23%3A49%3A31Z&se=2023-10-25T23%3A49%3A00Z&sr=b&sp=r&sig=COX0hNQTvgz%2FWTobJySaNr1nMe1SnYf4dntLLupQNrw%3D"
             },
             {
               "name": "OPENAI_KEY",
@@ -718,11 +751,11 @@
             },
             {
               "name": "OPENAI_DEPLOYMENT_SEARCH_DOC",
-              "value": "text-search-ada-doc-001"
+              "value": "text-embedding-ada-002"
             },
             {
               "name": "OPENAI_DEPLOYMENT_SEARCH_QUERY",
-              "value": "text-search-ada-query-001"
+              "value": "text-embedding-ada-002"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -743,6 +776,10 @@
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
               "value": "node"
+            },
+            {
+                "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                "value": "~18"
             },
             {
               "name": "COGSEARCH_URL",

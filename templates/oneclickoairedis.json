@@ -516,6 +516,20 @@
       }
     },
     {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-{1}', parameters('hostingPlanName'), 'windows')]", // "[parameters('hostingPlanName')]",
+      "location": "[parameters('primaryRegion')]",
+      "kind": "windows",
+      "sku": {
+        "name": "P2v2",
+        "tier": "PremiumV2"
+      },
+      "properties": {
+       
+      }
+    },
+    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
       "name": "[parameters('applicationInsightsName')]",
@@ -677,7 +691,7 @@
             },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v013.zip?sv=2021-10-04&st=2023-06-05T13%3A26%3A16Z&se=2024-04-24T13%3A26%3A00Z&sr=b&sp=r&sig=ztXu2%2F3xwvB5%2BxMevgNXDgfvb0HIcfDHdXMZntFj13I%3D"
+              "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v014.zip?sv=2021-10-04&st=2023-06-06T13%3A59%3A35Z&se=2024-02-20T14%3A59%3A00Z&sr=b&sp=r&sig=3mNhVka8ZQI%2FSncvEBlJrMaGFedPy%2BwBzVOjecgs%2F7Q%3D"
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -765,13 +779,13 @@
       "apiVersion": "2022-09-01",
       "name": "[parameters('functionAppName')]",
       "location": "[parameters('primaryRegion')]",
-      "kind": "functionapp,linux",
+      "kind": "functionapp",
       "properties": {
         "httpsOnly": true,
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
-        "clientAffinityEnabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}-{1}', parameters('hostingPlanName'), 'windows'))]",
         "siteConfig": {
-          "linuxFxVersion": "Node|16",
+          "use32BitWorkerProcess" : false,
+          "netFrameworkVersion": "6.0",
           "alwaysOn": true,
           "appSettings": [
             {
@@ -817,6 +831,10 @@
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
               "value": "node"
+            },
+            {
+                "name": "WEBSITE_NODE_DEFAULT_VERSION",
+                "value": "~18"
             },
             {
               "name": "COGSEARCH_URL",
