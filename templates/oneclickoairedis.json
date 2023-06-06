@@ -682,6 +682,10 @@
           "alwaysOn": true,
           "appSettings": [
             {
+              "name": "AzureWebJobsFeatureFlags",
+              "value": "EnableWorkerIndexing"
+            },
+            {
               "name": "OPENAI_DEPLOYMENT_SEARCH_DOC",
               "value": "text-embedding-ada-002"
             },

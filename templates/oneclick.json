@@ -565,6 +565,10 @@
           "alwaysOn": true,
           "appSettings": [
             {
+              "name": "AzureWebJobsFeatureFlags",
+              "value": "EnableWorkerIndexing"
+            },
+            {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "https://bpasource.blob.core.windows.net/source/huggingface/hf_backend_v014.zip?sv=2021-10-04&st=2023-06-06T13%3A59%3A35Z&se=2024-02-20T14%3A59%3A00Z&sr=b&sp=r&sig=3mNhVka8ZQI%2FSncvEBlJrMaGFedPy%2BwBzVOjecgs%2F7Q%3D"
             },  
