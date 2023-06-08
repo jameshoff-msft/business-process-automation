@@ -24,7 +24,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
                 body: await blobClient.downloadToBuffer()
             }
         } catch (err) {
-            ``
             context.log(err)
             context.res = {
                 body: err

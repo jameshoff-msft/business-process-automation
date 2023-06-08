@@ -25,6 +25,32 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
     const isDisabledCitationTab = !activeCitation;
 
     const sanitizedThoughts = DOMPurify.sanitize(answer.thoughts);
+    const getCitationFilePath = (citation) => {
+        const directories = citation.split('/')
+        let stage2Found = false
+        let filepath = ""
+        for(const dir of directories){
+            if(dir.includes('-stage2')){
+                stage2Found = true
+            }
+            if(stage2Found){
+                filepath += dir + '/'
+            }
+        }
+        let count = 0
+        let newFilePath = ""
+        for(const chunk of filepath.split('_')){
+            if(count++ > 1){
+                newFilePath += chunk 
+                if(count < filepath.split('_').length){
+                    newFilePath += '_'
+                }
+            }
+        }
+        newFilePath = newFilePath.replace('.txt/','')
+        return newFilePath
+    }
+    
 
     return (
         <Pivot
@@ -51,7 +77,7 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
                 headerText="Citation"
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
             >
-                <iframe title="Citation" src={`/api/viewpdf?container=documents&filename=${activeCitation}`} width="100%" height={citationHeight} />
+                <iframe title="Citation" src={`/api/viewpdf?container=documents&filename=${getCitationFilePath(activeCitation)}`} width="100%" height={citationHeight} />
             </PivotItem>
         </Pivot>
     );

@@ -12,4 +12,5 @@ class HuggingFace:
         nlp = pipeline("ner", model=self.model, tokenizer=self.tokenizer)
         out = nlp(text)
         return out, self.modelName
+    
         

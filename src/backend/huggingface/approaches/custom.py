@@ -1,20 +1,12 @@
-from approaches.agents.custom import FakeAgent
 from approaches.approach import Approach
-from approaches.chains.custom import CustomChain
 from approaches.retrievers.cogsearchfacetsretriever import CogSearchFacetsRetriever
-
-from langchain.callbacks.base import BaseCallbackHandler
-from langchain.agents import AgentType, initialize_agent, AgentOutputParser
-from langchain.chains import RetrievalQA, RetrievalQAWithSourcesChain
-from langchain.tools import Tool
+from approaches.llms.custom import CustomLLM
+from approaches.callback import MyCallbackHandler
+from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate, ChatPromptTemplate
-from langchain.callbacks.stdout import StdOutCallbackHandler
-from typing import Any, Dict, List, Union
-from langchain.schema import AgentAction, AgentFinish, LLMResult
+
 import re
-import json
 
 import os
 from approaches.retrievers.cogsearchretriever import CogSearchRetriever
@@ -24,69 +16,6 @@ os.environ["OPENAI_API_TYPE"] = "azure"
 os.environ["OPENAI_API_VERSION"] = "2022-12-01"
 os.environ["OPENAI_API_BASE"] = "https://"+os.environ["AZURE_OPENAI_SERVICE"]+".openai.azure.com"
 
-callback_sandbox = {}
-count = 0
-
-class MyCallbackHandler(BaseCallbackHandler):
-    """Base callback handler that can be used to handle callbacks from langchain."""
-    def __init__(self):
-        self.steps : List[str] = []
-
-    def get_prompts(self) -> List[str]:
-        return self.steps
-    
-    def on_llm_start(
-        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
-    ) -> Any:
-        """Run when LLM starts running."""
-        self.steps = self.steps + prompts
-
-    def on_llm_new_token(self, token: str, **kwargs: Any) -> Any:
-        """Run on new LLM token. Only available when streaming is enabled."""
-
-    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> Any:
-        """Run when LLM ends running."""
-
-    def on_llm_error(
-        self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any
-    ) -> Any:
-        """Run when LLM errors."""
-
-    def on_chain_start(
-        self, serialized: Dict[str, Any], inputs: Dict[str, Any], **kwargs: Any
-    ) -> Any:
-        """Run when chain starts running."""
-
-    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> Any:
-        """Run when chain ends running."""
-
-    def on_chain_error(
-        self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any
-    ) -> Any:
-        """Run when chain errors."""
-
-    def on_tool_start(
-        self, serialized: Dict[str, Any], input_str: str, **kwargs: Any
-    ) -> Any:
-        """Run when tool starts running."""
-
-    def on_tool_end(self, output: str, **kwargs: Any) -> Any:
-        """Run when tool ends running."""
-
-    def on_tool_error(
-        self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any
-    ) -> Any:
-        """Run when tool errors."""
-
-    def on_text(self, text: str, **kwargs: Any) -> Any:
-        """Run on arbitrary text."""
-
-    def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
-        """Run on agent action."""
-
-    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> Any:
-        """Run on agent end."""
-    
 class CustomApproach(Approach):
     def __init__(self, index: any):
         self.index = index
@@ -134,9 +63,11 @@ class CustomApproach(Approach):
 
     def run(self, history: list[dict], overrides: dict) -> any:
         handler = MyCallbackHandler()
-        local_count = count
-        llm = OpenAI(temperature=0.0,deployment_id=os.environ.get("AZURE_OPENAI_GPT_DEPLOYMENT"),callbacks=[handler], batch_size=1)
-
+        emulator = os.environ.get("LLM_EMULATOR") or "false"
+        if emulator == "true":
+            llm = CustomLLM(callback=handler,n=10)
+        else:
+            llm = OpenAI(temperature=0.0,deployment_id=os.environ.get("AZURE_OPENAI_GPT_DEPLOYMENT"),callbacks=[handler], batch_size=1)
 
         # chain = CustomChain(
         #     prompt=PromptTemplate.from_template('tell us a joke about {topic}'),
@@ -201,6 +132,7 @@ class CustomApproach(Approach):
         #             description="useful for when you need to lookup terms",
         #             return_direct=True
         #         ))
+        retriever_handler = MyCallbackHandler()
         if len(overrides.get("vector_search_pipeline")) > 2: 
             vector_retriever = VectorRetriever(overrides.get("vector_search_pipeline"), str(overrides.get("top")))
             qa = RetrievalQAWithSourcesChain.from_chain_type(llm=llm, chain_type="refine", retriever=vector_retriever)
@@ -218,7 +150,7 @@ class CustomApproach(Approach):
             #         description="useful for when you need to answer questions."
             #     ))
         else:
-            retriever = CogSearchRetriever(self.index,self.index.get("searchableFields"), overrides.get("top"))
+            retriever = CogSearchRetriever(self.index,self.index.get("searchableFields"), overrides.get("top"), retriever_handler)
             qa = RetrievalQAWithSourcesChain.from_chain_type(llm=llm, chain_type="refine", retriever=retriever)
             # retriever_facets = CogSearchFacetsRetriever(self.index,self.index.get("searchableFields"), overrides.get("top"))
             # qa_facets = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever_facets)
@@ -235,7 +167,7 @@ class CustomApproach(Approach):
             #     ))
 
         
-        out = qa({"question" : q + " Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf]."})
+        out = qa({"question" : q + " Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source that includes the full path, e.g. [directory1/directory2/info1.txt]. Don't combine sources, list each source separately, e.g. [directory1/directory2/info1.txt][directory1/directory2/info2.pdf]."})
 
         sources = re.findall(r'\[(.*?)\]',out["answer"])
         parsedSources = []
@@ -248,7 +180,8 @@ class CustomApproach(Approach):
 
         # agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True, return_intermediate_steps=True, max_iterations=3, input_variables=["sources", "chat_history", "input"])
         # out = agent({"input" : q})
+        docs = retriever_handler.get_prompts()
         prompts = handler.get_prompts()
         thoughts = '.'.join(str(x) for x in prompts)
         #thoughts, data_points = self.get_thought_string(out["intermediate_steps"])
-        return {"data_points": handler.get_prompts(), "answer": out["answer"], "thoughts": thoughts}
+        return {"data_points": docs, "answer": out["answer"], "thoughts": thoughts}
