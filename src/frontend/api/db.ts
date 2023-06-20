@@ -159,6 +159,7 @@ export class BlobDB extends DB {
     }
 
     public getConfig = async (): Promise<any> => {
+        console.log("in getConfig")
         let out : any
         //try{
             const pipelines = await this._configClient.getBuffer('pipelines.json')
